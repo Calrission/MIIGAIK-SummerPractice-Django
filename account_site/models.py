@@ -9,5 +9,8 @@ class Profile(models.Model):
     photo = models.ImageField(upload_to='users/%Y/%m/%d/',
                               blank=True)
 
+    objects = models.Manager()
+
+
     def __str__(self):
-        return f'Profile of {self.user.username}'
+        return f'Profile of {self.user.name}'

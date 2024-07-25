@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -67,26 +68,36 @@ def register(request):
 @login_required
 def edit(request):
     if request.method == 'POST':
-        user_form = UserEditForm(instance=request.user,
-                                 data=request.POST)
-        profile_form = ProfileEditForm(
-            instance=request.user.profile,
-            data=request.POST,
-            files=request.FILES)
-        if user_form.is_valid() and profile_form.is_valid():
+        user_db = User.objects.get(pk=request.user.id)
+        user_form = UserEditForm(request.POST, instance=user_db)
+        profile_db = Profile.objects.get(user=request.user)
+        profile_form = ProfileEditForm(request.POST, instance=profile_db, files=request.FILES)
+        valid = [False, False]
+        if user_form.is_valid():
             user_form.save()
+            valid[0] = True
+        if profile_form.is_valid():
             profile_form.save()
-            messages.success(request, 'Profile updated successfully')
+            valid[1] = True
+        if any(valid):
+            messages.success(request, 'Your account has been updated!')
         else:
-            messages.error(request, 'Error updating your profile')
+            messages.error(request, 'Please correct the error below.')
     else:
         user_form = UserEditForm(instance=request.user)
-        profile_form = ProfileEditForm(
-            instance=request.user.profile)
-    return render(request,
-                  'account/edit.html',
-                  {'user_form': user_form,
-                   'profile_form': profile_form})
+        if not request.user.is_superuser:
+            profile = Profile.objects.get(user_id=request.user.id)
+        else:
+            profile = None
+        profile_form = ProfileEditForm(instance=profile)
+    return render(
+        request,
+        'account/edit.html',
+        {
+            'user_form': user_form,
+            'profile_form': profile_form
+        }
+    )
 
 
 def redirect_vk(request):

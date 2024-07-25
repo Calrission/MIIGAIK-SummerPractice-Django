@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.forms import DateInput
+
 from .models import Profile
 
 
@@ -55,6 +57,12 @@ class UserEditForm(forms.ModelForm):
 
 
 class ProfileEditForm(forms.ModelForm):
+
+    photo = forms.FileField(required=False)
+
     class Meta:
         model = Profile
         fields = ['date_of_birth', 'photo']
+        widgets = {
+            'date_of_birth': DateInput(attrs={'type': 'date', "required": False}),
+        }
