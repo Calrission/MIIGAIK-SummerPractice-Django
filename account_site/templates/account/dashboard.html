@@ -3,8 +3,11 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-  <h1>Dashboard</h1>
-  <p>
-    Welcome to your dashboard. You can <a href="{% url "account_site:edit" %}">edit your profile</a> or <a href="{% url "account_site:password_change" %}">change your password</a>.
-  </p>
+    <h1>Dashboard</h1>
+    <p>
+        Welcome to your dashboard. You can <a href="{% url "account_site:edit" %}">edit your profile</a> or <a href="{% url "account_site:password_change" %}">change your password</a>.
+    </p>
+    <p>
+        <a href="{% url "blog:post_create" %}">Create new post</a>
+    </p>
 {% endblock %}
