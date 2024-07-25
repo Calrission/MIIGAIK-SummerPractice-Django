@@ -1,5 +1,7 @@
-<!DOCTYPE html>
-<html>
+{% extends "blog/base.html" %}
+{% load blog_tags %}
+
+{% block content %}
 <head>
     <title>Create Post</title>
 </head>
@@ -11,4 +13,4 @@
         <button type="submit">Create</button>
     </form>
 </body>
-</html>
+{% endblock %}
