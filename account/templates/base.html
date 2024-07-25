@@ -7,9 +7,12 @@
 </head>
 <body>
   <div id="header">
-    <span class="logo">Bookmarks</span>
+    <span class="logo">Artemii-Strukov</span>
     {% if request.user.is_authenticated %}
       <ul class="menu">
+        <li {% if section == "blog-home" %}class="selected"{% endif %}>
+          <a href="{% url "blog-home" %}">My blog</a>
+        </li>
         <li {% if section == "dashboard" %}class="selected"{% endif %}>
           <a href="{% url "account:dashboard" %}">My dashboard</a>
         </li>

@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Post
 from django.core.paginator import Paginator, EmptyPage, \
-                                  PageNotAnInteger
+    PageNotAnInteger
 from django.views.generic import ListView
 from django.contrib.postgres.search import TrigramSimilarity
 from .forms import EmailPostForm, CommentForm, SearchForm
@@ -28,10 +28,15 @@ def post_list(request, tag_slug=None):
     except EmptyPage:
         # If page_number is out of range deliver last page of results
         posts = paginator.page(paginator.num_pages)
-    return render(request,
-                 'blog/post/list.html',
-                 {'posts': posts,
-                  'tag': tag})
+    return render(
+        request,
+        'blog/post/list.html',
+        {
+            'posts': posts,
+            'section': 'blog-home',
+            'tag': tag
+        }
+    )
 
 
 def post_detail(request, year, month, day, post):
@@ -49,10 +54,10 @@ def post_detail(request, year, month, day, post):
 
     # List of similar posts
     post_tags_ids = post.tags.values_list('id', flat=True)
-    similar_posts = Post.published.filter(tags__in=post_tags_ids)\
-                                  .exclude(id=post.id)
-    similar_posts = similar_posts.annotate(same_tags=Count('tags'))\
-                                .order_by('-same_tags','-publish')[:4]
+    similar_posts = Post.published.filter(tags__in=post_tags_ids) \
+        .exclude(id=post.id)
+    similar_posts = similar_posts.annotate(same_tags=Count('tags')) \
+                        .order_by('-same_tags', '-publish')[:4]
 
     return render(request,
                   'blog/post/detail.html',
@@ -75,7 +80,7 @@ class PostListView(ListView):
 def post_share(request, post_id):
     # Retrieve post by id
     post = get_object_or_404(Post, id=post_id, \
-                                   status=Post.Status.PUBLISHED)
+                             status=Post.Status.PUBLISHED)
     sent = False
 
     if request.method == 'POST':
@@ -103,7 +108,7 @@ def post_share(request, post_id):
 @require_POST
 def post_comment(request, post_id):
     post = get_object_or_404(Post, id=post_id, \
-                                   status=Post.Status.PUBLISHED)
+                             status=Post.Status.PUBLISHED)
     comment = None
     # A comment was posted
     form = CommentForm(data=request.POST)
@@ -115,9 +120,9 @@ def post_comment(request, post_id):
         # Save the comment to the database
         comment.save()
     return render(request, 'blog/post/comment.html',
-                           {'post': post,
-                            'form': form,
-                            'comment': comment})
+                  {'post': post,
+                   'form': form,
+                   'comment': comment})
 
 
 def post_search(request):
