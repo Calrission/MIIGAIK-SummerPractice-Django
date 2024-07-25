@@ -1,10 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post
 from django.core.paginator import Paginator, EmptyPage, \
     PageNotAnInteger
 from django.views.generic import ListView
 from django.contrib.postgres.search import TrigramSimilarity
-from .forms import EmailPostForm, CommentForm, SearchForm
+from .forms import EmailPostForm, CommentForm, SearchForm, PostForm
 from django.core.mail import send_mail
 from django.views.decorators.http import require_POST
 from taggit.models import Tag
@@ -123,6 +124,21 @@ def post_comment(request, post_id):
                   {'post': post,
                    'form': form,
                    'comment': comment})
+
+
+def create_post_page(request):
+    if not request.user.is_authenticated:
+        return redirect("account_site:login")
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('/')
+    else:
+        form = PostForm()
+    return render(request, 'blog/post/create.html', {'form': form})
 
 
 def post_search(request):
