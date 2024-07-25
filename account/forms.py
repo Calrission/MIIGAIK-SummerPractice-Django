@@ -18,17 +18,26 @@ class UserRegistrationForm(forms.ModelForm):
         model = User
         fields = ['username', 'first_name', 'email']
 
-    def clean_password2(self):
-        cd = self.cleaned_data
-        if cd['password'] != cd['password2']:
-            raise forms.ValidationError('Passwords don\'t match.')
-        return cd['password2']
+    def validation_password(self):
+        password = self.data['password']
+        confirm_password = self.data['password2']
+        if password != confirm_password:
+            raise forms.ValidationError("Passwords don't match.")
+        return password
 
-    def clean_email(self):
-        data = self.cleaned_data['email']
+    def validation_email(self):
+        data = self.data['email']
         if User.objects.filter(email=data).exists():
             raise forms.ValidationError('Email already in use.')
         return data
+
+    def validation(self):
+        self.validation_email()
+        self.validation_password()
+
+    def is_valid(self):
+        self.validation()
+        return super().is_valid()
 
 
 class UserEditForm(forms.ModelForm):

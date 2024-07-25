@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -47,19 +48,17 @@ def dashboard(request):
 def register(request):
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
-        if user_form.is_valid():
-            # Create a new user object but avoid saving it yet
-            new_user = user_form.save(commit=False)
-            # Set the chosen password
-            new_user.set_password(
-                user_form.cleaned_data['password'])
-            # Save the User object
-            new_user.save()
-            # Create the user profile
-            Profile.objects.create(user=new_user)
-            return render(request,
-                          'account/register_done.html',
-                          {'new_user': new_user})
+        try:
+            if user_form.is_valid():
+                new_user = user_form.save(commit=False)
+                new_user.set_password(user_form.cleaned_data['password'])
+                new_user.save()
+                Profile.objects.create(user=new_user)
+                return render(request,
+                              'account/register_done.html',
+                              {'new_user': new_user})
+        except ValidationError as e:
+            messages.error(request, e.message)
     user_form = UserRegistrationForm()
     return render(request,
                   'account/register.html',
@@ -78,8 +77,7 @@ def edit(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, 'Profile updated ' \
-                                      'successfully')
+            messages.success(request, 'Profile updated successfully')
         else:
             messages.error(request, 'Error updating your profile')
     else:
