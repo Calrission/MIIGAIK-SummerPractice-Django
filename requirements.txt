@@ -1,4 +1,13 @@
 asgiref==3.5.2
-Django==4.1.0
+Django~=4.1.0
 sqlparse==0.4.2
+django-taggit==3.0.0
+Markdown==3.4.1
+psycopg2-binary==2.9.3
+asgiref==3.5.2
+Django~=4.1.0
 Pillow==9.2.0
+sqlparse==0.4.2
+werkzeug==2.2.2
+pyOpenSSL==22.0.0
+
