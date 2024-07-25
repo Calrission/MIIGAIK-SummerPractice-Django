@@ -1,10 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import LoginForm, UserRegistrationForm, \
-                   UserEditForm, ProfileEditForm
+    UserEditForm, ProfileEditForm
 from .models import Profile
 
 
@@ -19,16 +19,22 @@ def user_login(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponse('Authenticated successfully')
+                    return redirect('/')
                 else:
-                    return HttpResponse('Disabled account')
+                    messages.error(request, 'Disabled account')
             else:
-                return HttpResponse('Invalid login')
+                messages.error(request, 'Invalid login')
     else:
         if request.user.is_authenticated:
             return redirect("/")
         form = LoginForm()
     return render(request, 'account/login.html', {'form': form})
+
+
+@login_required
+def logout_user(request):
+    logout(request)
+    return redirect("/")
 
 
 @login_required
@@ -66,20 +72,20 @@ def edit(request):
         user_form = UserEditForm(instance=request.user,
                                  data=request.POST)
         profile_form = ProfileEditForm(
-                                    instance=request.user.profile,
-                                    data=request.POST,
-                                    files=request.FILES)
+            instance=request.user.profile,
+            data=request.POST,
+            files=request.FILES)
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, 'Profile updated '\
+            messages.success(request, 'Profile updated ' \
                                       'successfully')
         else:
             messages.error(request, 'Error updating your profile')
     else:
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(
-                                    instance=request.user.profile)
+            instance=request.user.profile)
     return render(request,
                   'account/edit.html',
                   {'user_form': user_form,
