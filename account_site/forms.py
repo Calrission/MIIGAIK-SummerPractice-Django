@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.db.models import DecimalField
 from django.forms import DateInput
 
-from .models import Profile
+from .models import Profile, Token
 
 
 class LoginForm(forms.Form):
@@ -49,15 +50,14 @@ class UserEditForm(forms.ModelForm):
 
     def clean_email(self):
         data = self.cleaned_data['email']
-        qs = User.objects.exclude(id=self.instance.id)\
-                         .filter(email=data)
+        qs = User.objects.exclude(id=self.instance.id) \
+            .filter(email=data)
         if qs.exists():
             raise forms.ValidationError('Email already in use.')
         return data
 
 
 class ProfileEditForm(forms.ModelForm):
-
     photo = forms.FileField(required=False)
 
     class Meta:
@@ -66,3 +66,12 @@ class ProfileEditForm(forms.ModelForm):
         widgets = {
             'date_of_birth': DateInput(attrs={'type': 'date', "required": False}),
         }
+
+
+class TokenForm(forms.ModelForm):
+
+    code = DecimalField(max_digits=6)
+
+    class Meta:
+        model = Token
+        fields = ['code']

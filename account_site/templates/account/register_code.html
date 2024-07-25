@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+    <h1>Welcome {{ new_user.first_name }}!</h1>
+    <p>
+    A six-digit code has been sent to your email {{ new_user.email }}. Please enter it!
+    </p>
+    <form action="{% url 'account_site:code' %}" method="post">
+      {{ form.as_p }}
+      {% csrf_token %}
+      <p><input type="submit" value="Send"></p>
+    </form>
+{% endblock %}
