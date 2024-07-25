@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -25,6 +25,8 @@ def user_login(request):
             else:
                 return HttpResponse('Invalid login')
     else:
+        if request.user.is_authenticated:
+            return redirect("/")
         form = LoginForm()
     return render(request, 'account/login.html', {'form': form})
 
@@ -52,8 +54,7 @@ def register(request):
             return render(request,
                           'account/register_done.html',
                           {'new_user': new_user})
-    else:
-        user_form = UserRegistrationForm()
+    user_form = UserRegistrationForm()
     return render(request,
                   'account/register.html',
                   {'user_form': user_form})
