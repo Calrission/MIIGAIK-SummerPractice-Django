@@ -47,9 +47,7 @@ def post_detail(request, year, month, day, post):
                              publish__month=month,
                              publish__day=day)
 
-    # List of active comments for this post
-    # comments = post.comments.filter(active=True)
-    # Form for users to comment
+    comments = post.comments.filter(active=True)
     form = CommentForm()
 
     # List of similar posts
@@ -60,7 +58,7 @@ def post_detail(request, year, month, day, post):
     return render(request,
                   'blog/post/detail.html',
                   {'post': post,
-                   'comments': [],
+                   'comments': comments,
                    'form': form})
 
 
