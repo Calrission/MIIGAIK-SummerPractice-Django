@@ -7,6 +7,8 @@ from django.contrib import messages
 from .forms import LoginForm, UserRegistrationForm, \
     UserEditForm, ProfileEditForm
 from .models import Profile
+from django.conf import settings
+from django.core.mail import send_mail
 
 
 def user_login(request):
@@ -54,6 +56,11 @@ def register(request):
                 new_user.set_password(user_form.cleaned_data['password'])
                 new_user.save()
                 Profile.objects.create(user=new_user)
+                subject = 'Welcome to my blog'
+                message = f'Hi {request.user.username}, thank you for registering.'
+                email_from = settings.EMAIL_HOST_USER
+                recipient_list = [user_form.email]
+                send_mail(subject, message, email_from, recipient_list)
                 return render(request,
                               'account/register_done.html',
                               {'new_user': new_user})
