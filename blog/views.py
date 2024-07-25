@@ -48,23 +48,20 @@ def post_detail(request, year, month, day, post):
                              publish__day=day)
 
     # List of active comments for this post
-    comments = post.comments.filter(active=True)
+    # comments = post.comments.filter(active=True)
     # Form for users to comment
     form = CommentForm()
 
     # List of similar posts
-    post_tags_ids = post.tags.values_list('id', flat=True)
-    similar_posts = Post.published.filter(tags__in=post_tags_ids) \
-        .exclude(id=post.id)
-    similar_posts = similar_posts.annotate(same_tags=Count('tags')) \
-                        .order_by('-same_tags', '-publish')[:4]
+    # post_tags_ids = post.tags.values_list('id', flat=True)
+    # similar_posts = Post.published.exclude(id=post.id)
+    # similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags', '-publish')[:4]
 
     return render(request,
                   'blog/post/detail.html',
                   {'post': post,
-                   'comments': comments,
-                   'form': form,
-                   'similar_posts': similar_posts})
+                   'comments': [],
+                   'form': form})
 
 
 class PostListView(ListView):
