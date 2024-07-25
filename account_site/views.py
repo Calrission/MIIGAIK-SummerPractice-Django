@@ -1,5 +1,4 @@
 from django.core.exceptions import ValidationError
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -22,7 +21,7 @@ def user_login(request):
                     login(request, user)
                     return redirect('/')
                 else:
-                    messages.error(request, 'Disabled account')
+                    messages.error(request, 'Disabled account_site')
             else:
                 messages.error(request, 'Invalid login')
     else:
@@ -88,3 +87,7 @@ def edit(request):
                   'account/edit.html',
                   {'user_form': user_form,
                    'profile_form': profile_form})
+
+
+def redirect_vk(request):
+    pass

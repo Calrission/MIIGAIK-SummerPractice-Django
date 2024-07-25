@@ -16,7 +16,7 @@
           <a href="{% url "blog-home" %}">My blog</a>
         </li>
         <li {% if section == "dashboard" %}class="selected"{% endif %}>
-          <a href="{% url "account:dashboard" %}">My dashboard</a>
+          <a href="{% url "account_site:dashboard" %}">My dashboard</a>
         </li>
         <li {% if section == "images" %}class="selected"{% endif %}>
           <a href="#">Images</a>
@@ -29,9 +29,9 @@
     <span class="user">
       {% if request.user.is_authenticated %}
         Hello {{ request.user.first_name|default:request.user.username }},
-        <a href="{% url "account:logout" %}">Logout</a>
+        <a href="{% url "account_site:logout" %}">Logout</a>
       {% else %}
-        <a href="{% url "account:login" %}">Log-in</a>
+        <a href="{% url "account_site:login" %}">Log-in</a>
       {% endif %}
     </span>
   </div>

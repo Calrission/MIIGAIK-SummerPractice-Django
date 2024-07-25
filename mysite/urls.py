@@ -32,7 +32,7 @@ urlpatterns = [
     path('blog/', include('blog.urls', namespace='blog')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),
-    path('account/', include('account.urls', namespace='account')),
+    path('account/', include('account_site.urls', namespace='account_site')),
     path('', post_list, name='blog-home'),
 ]
 

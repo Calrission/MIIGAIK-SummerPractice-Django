@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from account.models import Profile
+from account_site.models import Profile
 
 
 class EmailAuthBackend:
