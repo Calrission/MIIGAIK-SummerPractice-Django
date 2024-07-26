@@ -19,7 +19,6 @@ urlpatterns = [
          auth_views.PasswordChangeDoneView.as_view(),
          name='password_change_done'),
 
-    # reset password urls
     path('password-reset/',
          auth_views.PasswordResetView.as_view(),
          name='password_reset'),
