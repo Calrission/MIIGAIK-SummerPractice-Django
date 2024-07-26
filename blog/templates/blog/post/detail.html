@@ -24,11 +24,11 @@
 {#    There are no similar posts yet.#}
 {#  {% endfor %}#}
 {##}
-  {% with comments.count as total_comments %}
+{% with comments.count as total_comments %}
     <h2>
-      {{ total_comments }} comment{{ total_comments|pluralize }}
+        {{ total_comments }} comment{{ total_comments|pluralize }}
     </h2>
-  {% endwith %}
+{% endwith %}
   {% for comment in comments %}
     <div class="comment">
       <p class="info">
@@ -40,5 +40,7 @@
   {% empty %}
     <p>There are no comments yet.</p>
   {% endfor %}
-  {% include "blog/post/includes/comment_form.html" %}
+    {% if user.is_authenticated %}
+        {% include "blog/post/includes/comment_form.html" %}
+    {% endif %}
 {% endblock %}
